@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Sun, Cloud, CloudRain, CloudSnow, CloudLightning, Wind, Thermometer } from 'lucide-react';
+import './WeatherApp.css';
 
 export default function WeatherApp() {
   const [location, setLocation] = useState('New York');
@@ -18,26 +19,26 @@ export default function WeatherApp() {
   const getWeatherIcon = (condition, size = 24) => {
     switch (condition) {
       case 'sunny':
-        return <Sun size={size} className="text-yellow-500" />;
+        return <Sun size={size} color="#f59e0b" />;
       case 'cloudy':
-        return <Cloud size={size} className="text-gray-500" />;
+        return <Cloud size={size} color="#6b7280" />;
       case 'partly-cloudy':
         return (
-          <div className="relative">
-            <Sun size={size} className="text-yellow-500" />
-            <Cloud size={size * 0.8} className="text-gray-400 absolute -top-1 -right-1" />
+          <div className="icon-container">
+            <Sun size={size} color="#f59e0b" />
+            <Cloud size={size * 0.8} color="#9ca3af" className="icon-overlay" />
           </div>
         );
       case 'rainy':
-        return <CloudRain size={size} className="text-blue-500" />;
+        return <CloudRain size={size} color="#3b82f6" />;
       case 'snowy':
-        return <CloudSnow size={size} className="text-blue-200" />;
+        return <CloudSnow size={size} color="#bfdbfe" />;
       case 'stormy':
-        return <CloudLightning size={size} className="text-purple-500" />;
+        return <CloudLightning size={size} color="#8b5cf6" />;
       case 'windy':
-        return <Wind size={size} className="text-blue-300" />;
+        return <Wind size={size} color="#93c5fd" />;
       default:
-        return <Sun size={size} className="text-yellow-500" />;
+        return <Sun size={size} color="#f59e0b" />;
     }
   };
 
@@ -66,63 +67,63 @@ export default function WeatherApp() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 p-4 font-sans">
-      <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+    <div className="weather-container">
+      <div className="weather-card">
         
         {/* Search Bar */}
-        <div className="p-4 flex gap-2">
+        <div className="search-bar">
           <input
             type="text"
             placeholder="Search location..."
-            className="flex-1 p-2 border border-gray-300 rounded"
+            className="search-input"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
           />
           <button 
             onClick={handleSearch}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="search-button"
           >
             Search
           </button>
         </div>
         
         {/* Current Weather */}
-        <div className="p-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white">
-          <div className="flex justify-between items-center">
+        <div className="current-weather">
+          <div className="current-weather-content">
             <div>
-              <h2 className="text-3xl font-bold">{location}</h2>
-              <p className="text-lg capitalize">{weather}</p>
-              <div className="flex items-center gap-2 mt-1">
+              <h2 className="location">{location}</h2>
+              <p className="weather-status">{weather}</p>
+              <div className="temperature-container">
                 <Thermometer size={20} />
-                <span className="text-2xl font-semibold">
+                <span className="temperature">
                   {convertTemperature(temperature)}°{unit}
                 </span>
                 <button 
                   onClick={toggleUnit}
-                  className="text-xs bg-white bg-opacity-20 px-2 py-1 rounded hover:bg-opacity-30"
+                  className="unit-toggle"
                 >
                   °{unit === 'F' ? 'C' : 'F'}
                 </button>
               </div>
             </div>
-            <div className="text-6xl">
+            <div className="weather-icon-large">
               {getWeatherIcon(weather, 64)}
             </div>
           </div>
         </div>
         
         {/* 5-Day Forecast */}
-        <div className="p-4">
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">5-Day Forecast</h3>
-          <div className="flex justify-between">
+        <div className="forecast-section">
+          <h3 className="forecast-title">5-Day Forecast</h3>
+          <div className="forecast-days">
             {forecast.map((day, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <p className="font-medium">{day.day}</p>
-                <div className="my-2">{getWeatherIcon(day.weather)}</div>
-                <div className="text-xs flex gap-1">
-                  <span className="text-gray-900">{convertTemperature(day.high)}°</span>
-                  <span className="text-gray-500">{convertTemperature(day.low)}°</span>
+              <div key={index} className="forecast-day">
+                <p className="day-name">{day.day}</p>
+                <div className="forecast-icon">{getWeatherIcon(day.weather)}</div>
+                <div className="temperature-range">
+                  <span className="high-temp">{convertTemperature(day.high)}°</span>
+                  <span className="low-temp">{convertTemperature(day.low)}°</span>
                 </div>
               </div>
             ))}
@@ -130,34 +131,34 @@ export default function WeatherApp() {
         </div>
         
         {/* Details */}
-        <div className="border-t border-gray-200">
-          <div className="grid grid-cols-2 gap-4 p-4 text-sm">
-            <div className="flex items-center gap-2">
-              <Wind size={18} className="text-blue-500" />
+        <div className="details-section">
+          <div className="details-grid">
+            <div className="detail-item">
+              <Wind size={18} className="detail-icon" />
               <div>
-                <p className="text-gray-500">Wind</p>
-                <p>8 mph</p>
+                <p className="detail-label">Wind</p>
+                <p className="detail-value">8 mph</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="text-blue-500">💧</div>
+            <div className="detail-item">
+              <div className="detail-icon">💧</div>
               <div>
-                <p className="text-gray-500">Humidity</p>
-                <p>65%</p>
+                <p className="detail-label">Humidity</p>
+                <p className="detail-value">65%</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="text-blue-500">🌅</div>
+            <div className="detail-item">
+              <div className="detail-icon">🌅</div>
               <div>
-                <p className="text-gray-500">Sunrise</p>
-                <p>6:24 AM</p>
+                <p className="detail-label">Sunrise</p>
+                <p className="detail-value">6:24 AM</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="text-blue-500">🌇</div>
+            <div className="detail-item">
+              <div className="detail-icon">🌇</div>
               <div>
-                <p className="text-gray-500">Sunset</p>
-                <p>8:12 PM</p>
+                <p className="detail-label">Sunset</p>
+                <p className="detail-value">8:12 PM</p>
               </div>
             </div>
           </div>
